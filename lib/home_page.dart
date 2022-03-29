@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                   createWaterReminderNotification(pickedSchedule);
                 }
               },
-              onPressedThree: () async {},
+              onPressedThree: cancelScheduledNotifications,
             ),
           ],
         ),

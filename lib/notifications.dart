@@ -43,3 +43,7 @@ Future<void> createWaterReminderNotification(
     ),
   );
 }
+
+Future<void> cancelScheduledNotifications() async {
+  await AwesomeNotifications().cancelAllSchedules();
+}
