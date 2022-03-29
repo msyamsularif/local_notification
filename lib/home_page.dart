@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:example_local_notification/utilities.dart';
 import 'package:flutter/material.dart';
 
 import 'notifications.dart';
@@ -122,7 +123,14 @@ class _HomePageState extends State<HomePage> {
             ),
             HomePageButtons(
               onPressedOne: createPlantFoodNotification,
-              onPressedTwo: () async {},
+              onPressedTwo: () async {
+                NotificationWeekAndTime? pickedSchedule =
+                    await pickSchedule(context);
+
+                if (pickedSchedule != null) {
+                  createWaterReminderNotification(pickedSchedule);
+                }
+              },
               onPressedThree: () async {},
             ),
           ],
