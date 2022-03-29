@@ -63,26 +63,29 @@ Future<NotificationWeekAndTime?> pickSchedule(
 
   if (selectedDay != null) {
     timeOfDay = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(
-          now.add(
-            const Duration(minutes: 1),
-          ),
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(
+        now.add(
+          const Duration(minutes: 1),
         ),
-        builder: (BuildContext context, Widget? child) {
-          return Theme(
-            data: ThemeData(
-              colorScheme: const ColorScheme.light(
-                primary: Colors.teal,
-              ),
+      ),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.teal,
             ),
-            child: child!,
-          );
-        });
+          ),
+          child: child!,
+        );
+      },
+    );
 
     if (timeOfDay != null) {
       return NotificationWeekAndTime(
-          dayOfTheWeek: selectedDay!, timeOfDay: timeOfDay);
+        dayOfTheWeek: selectedDay!,
+        timeOfDay: timeOfDay,
+      );
     }
   }
   return null;
