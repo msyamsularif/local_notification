@@ -15,6 +15,15 @@ void main() {
         channelShowBadge: true,
         channelDescription: 'Notification channel for basic tests',
       ),
+      NotificationChannel(
+        channelKey: 'scheduled_channel',
+        channelName: 'Scheduled Notifications',
+        defaultColor: Colors.teal,
+        locked: true,
+        importance: NotificationImportance.High,
+        soundSource: 'resource://raw/res_custom_notification',
+        channelDescription: 'Notification channel for scheduled',
+      ),
     ],
   );
   runApp(const AppWidget());
