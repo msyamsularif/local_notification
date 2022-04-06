@@ -1,7 +1,9 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:example_local_notification/view-models/notification_history/notification_history_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'home_page.dart';
+import 'pages/home_page.dart';
 
 void main() {
   AwesomeNotifications().initialize(
@@ -34,16 +36,19 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.teal,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: Colors.tealAccent,
+    return BlocProvider<NotificationHistoryCubit>(
+      create: (context) => NotificationHistoryCubit(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Colors.teal,
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            secondary: Colors.tealAccent,
+          ),
         ),
+        title: 'Green Thumbs',
+        home: const HomePage(),
       ),
-      title: 'Green Thumbs',
-      home: const HomePage(),
     );
   }
 }

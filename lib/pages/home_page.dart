@@ -1,12 +1,17 @@
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:example_local_notification/utilities.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'notifications.dart';
+import '../helpers/notifications.dart';
+import '../models/notification_model.dart';
+import '../utils/utilities.dart';
+import '../view-models/notification_history/notification_history_cubit.dart';
+import '../widgets/widgets.dart';
+import 'notification_page.dart';
 import 'plant_stats_page.dart';
-import 'widgets.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -58,6 +63,27 @@ class _HomePageState extends State<HomePage> {
     );
 
     AwesomeNotifications().createdStream.listen((notification) {
+      context.read<NotificationHistoryCubit>().addNotification(
+            ModelNotification(
+              id: notification.id.toString(),
+              title: notification.title!,
+              subTitle: notification.body!,
+              dateTime: DateTime.now().toIso8601String(),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PlantStatsPage(),
+                    ),
+                    (route) => route.isFirst);
+
+                context
+                    .read<NotificationHistoryCubit>()
+                    .updateNotification(notification.id.toString());
+              },
+            ),
+          );
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Notification Created on ${notification.channelKey}'),
@@ -68,10 +94,13 @@ class _HomePageState extends State<HomePage> {
     AwesomeNotifications().actionStream.listen((notification) {
       if (notification.channelKey == 'basic_channel' && Platform.isIOS) {
         AwesomeNotifications().getGlobalBadgeCounter().then(
-              (value) =>
-                  AwesomeNotifications().setGlobalBadgeCounter(value - 1),
-            );
+            (value) => AwesomeNotifications().setGlobalBadgeCounter(value - 1));
       }
+
+      context
+          .read<NotificationHistoryCubit>()
+          .updateNotification(notification.id.toString());
+
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -97,6 +126,40 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         title: const AppBarTitle(),
         actions: [
+          BlocBuilder<NotificationHistoryCubit, NotificationHistoryState>(
+            buildWhen: (previous, current) =>
+                previous.isAdded != current.isAdded ||
+                previous.isDelete != current.isDelete ||
+                previous.isUpdate != current.isUpdate,
+            builder: (context, state) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NotificationPage(),
+                    ),
+                  );
+                },
+                icon: Badge(
+                  badgeContent: Text(
+                    state.notifications
+                        .where((e) => e.isRead == false)
+                        .length
+                        .toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.notifications_none_outlined,
+                    size: 30,
+                  ),
+                ),
+              );
+            },
+          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -110,7 +173,7 @@ class _HomePageState extends State<HomePage> {
               Icons.insert_chart_outlined_rounded,
               size: 30,
             ),
-          )
+          ),
         ],
       ),
       body: Center(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class AppBarTitle extends StatelessWidget {
   const AppBarTitle({Key? key}) : super(key: key);
@@ -248,6 +249,104 @@ class PlantStats extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class NotificationCard extends StatelessWidget {
+  final String title;
+  final String subTitle;
+  final String dateTime;
+  final bool? isRead;
+  final VoidCallback onPressed;
+  final VoidCallback onDeleted;
+
+  const NotificationCard({
+    Key? key,
+    required this.title,
+    required this.subTitle,
+    required this.dateTime,
+    this.isRead = false,
+    required this.onPressed,
+    required this.onDeleted,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String dateFormate = DateFormat('EEE, dd MMMM yyyy - kk:mm').format(
+      DateTime.parse(dateTime),
+    );
+
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 20),
+        decoration: BoxDecoration(
+          color: isRead ?? false ? Colors.grey[200] : Colors.lightBlue[100],
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: ListTile(
+          dense: true,
+          contentPadding: const EdgeInsets.only(
+            top: 10,
+            bottom: 16,
+            left: 16,
+            right: 16,
+          ),
+          visualDensity: const VisualDensity(
+            vertical: -4,
+            horizontal: -4,
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                dateFormate,
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+              IconButton(
+                onPressed: onDeleted,
+                padding: EdgeInsets.zero,
+                visualDensity: const VisualDensity(
+                  horizontal: -4,
+                  vertical: -4,
+                ),
+                color: Colors.black,
+                icon: const Icon(Icons.cancel_outlined),
+              ),
+            ],
+          ),
+          textColor: Colors.black,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                subTitle,
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
