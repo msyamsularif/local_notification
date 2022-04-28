@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
 
-    AwesomeNotifications().createdStream.listen((notification) {
+    AwesomeNotifications().displayedStream.listen((notification) async {
       context.read<NotificationHistoryCubit>().addNotification(
             ModelNotification(
               id: notification.id.toString(),
@@ -83,7 +83,9 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           );
+    });
 
+    AwesomeNotifications().createdStream.listen((notification) async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Notification Created on ${notification.channelKey}'),
@@ -114,6 +116,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    AwesomeNotifications().displayedSink.close();
     AwesomeNotifications().actionSink.close();
     AwesomeNotifications().createdSink.close();
     super.dispose();
