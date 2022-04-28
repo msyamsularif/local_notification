@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
 
-    AwesomeNotifications().displayedStream.listen((notification) async {
+    AwesomeNotifications().displayedStream.listen((notification) {
       context.read<NotificationHistoryCubit>().addNotification(
             ModelNotification(
               id: notification.id.toString(),
@@ -71,11 +71,16 @@ class _HomePageState extends State<HomePage> {
               dateTime: DateTime.now().toIso8601String(),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const PlantStatsPage(),
-                    ),
-                    (route) => route.isFirst);
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PlantStatsPage(),
+                  ),
+                  (route) => route.isFirst,
+                );
+
+                AwesomeNotifications().dismissNotificationsByChannelKey(
+                  notification.channelKey!,
+                );
 
                 context
                     .read<NotificationHistoryCubit>()
