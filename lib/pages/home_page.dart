@@ -78,9 +78,7 @@ class _HomePageState extends State<HomePage> {
                   (route) => route.isFirst,
                 );
 
-                AwesomeNotifications().dismissNotificationsByChannelKey(
-                  notification.channelKey!,
-                );
+                AwesomeNotifications().dismiss(notification.id!);
 
                 context
                     .read<NotificationHistoryCubit>()
